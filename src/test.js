@@ -3,7 +3,7 @@ class test extends Phaser.Scene{
         super("test");
     }
     create(){
-        // this.add.circle(0, 0, 10, 20);
+        this.add.circle(100, 100, 50, 0x172348);
         ;
     }
 }
