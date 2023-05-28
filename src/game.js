@@ -10,14 +10,16 @@ class Intro extends Phaser.Scene
 
     create ()
     {
-        const text = this.add.text(400, 300, 'Right Way', { align: 'center' }, 0xFF69B4);
+        this.w = this.game.config.width;
+        this.h = this.game.config.height;
+        const text = this.add.text(this.w/2, this.h*1/4, 'Right Way', { align: 'center' }, 0xFF69B4);
         text.setTint(0xFF69B4, 0xFFC0CB, 0x9F2B68, 0xE30B5C);
 
         text.setOrigin(0.5, 0.5);
         text.setResolution(window.devicePixelRatio);
         text.setFontFamily('Arial');
         text.setFontStyle('bold');
-        text.setFontSize(100);
+        text.setFontSize(200);
 
         text.preFX.setPadding(32);
 
@@ -25,20 +27,21 @@ class Intro extends Phaser.Scene
 
         // adding start button 
 
-        const start = this.add.image(400, 600, 'start').setOrigin(0.5, 1);
+        const start = this.add.image(this.w/2, this.h*12/20, 'start').setOrigin(0.5, 1);
+        start.setScale(3);
 
         const chain1 = this.tweens.chain({
             targets: start,
             tweens: [
                 {
-                    y: 470,
-                    scaleX: 0.7,
+                    y: this.h*11/20,
+                    scaleX: 2,
                     duration: 300,
                     ease: 'quad.out'
                 },
                 {
-                    y: 550,
-                    scaleX: 1,
+                    y: this.h*12/20,
+                    scaleX: 3,
                     duration: 1000,
                     ease: 'bounce.out'
                 },
@@ -110,7 +113,7 @@ const config = {
         default: 'arcade',
         arcade: { debug: true }
     },
-    scene: [ Level1]
+    scene: [Intro, Level1]
     
 };
 
