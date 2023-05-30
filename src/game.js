@@ -225,9 +225,15 @@ class Level1 extends Phaser.Scene
 
 
 const config = {
-    type: Phaser.AUTO,
-    width: 2388,
-    height: 1668,
+    scale:{
+        // mode: Phaser.Scale.RESIZE,
+        zoom: 0.41,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        // displayScale: 0.1,
+        // displaySize: 0.001,
+        width: 2388,
+        height: 1668,
+    },
     backgroundColor: '#FFC0CB',
     parent: 'phaser-example',
     physics: {
