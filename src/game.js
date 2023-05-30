@@ -58,6 +58,10 @@ class Intro extends Phaser.Scene
 
 class Level1 extends Phaser.Scene
 {   
+    man;
+    rotate = true;
+    temp = 0;
+    rotationNum = 0;
     constructor() {
         super('level1')
     }
@@ -84,20 +88,60 @@ class Level1 extends Phaser.Scene
         const kitchen = this.add.image(this.w*6.5/20, this.h*5/20, 'kitchen');
         // const bg = this.add.image(this.w/2, this.h/2, 'bg');
         const bed = this.physics.add.sprite(this.w*16/20, this.h*4/5, 'bed').setCollideWorldBounds(true);
+            bed.setPushable(false);
         const coffee = this.physics.add.sprite(this.w*7/20, this.h*2/20, 'coffee').setCollideWorldBounds(true);
+            coffee.setPushable(false);
         const coffeeMachine = this.physics.add.sprite(this.w*1.5/20, this.h*7/20, 'coffeeMachine').setCollideWorldBounds(true);
+            coffeeMachine.setPushable(false);
         // const door = this.physics.add.sprite(this.w*10/20, this.h*7/20, 'door').setCollideWorldBounds(true);
         const door = this.add.image(this.w*13.5/20, this.h*10/20, 'door');
         
         const dresser = this.physics.add.sprite(this.w*19/20, 0, 'dresser').setCollideWorldBounds(true);
-        
+            dresser.setPushable(false);
         const mat = this.physics.add.sprite(0, this.h*17/20, 'mat').setCollideWorldBounds(true);
+            mat.setPushable(false);
         const mirror = this.physics.add.sprite(this.w*15/20, this.h*2/20, 'mirror').setCollideWorldBounds(true);
+            mirror.setPushable(false);
         const sink = this.physics.add.sprite(this.w*10/20, this.h*2/20, 'sink').setCollideWorldBounds(true);
-        const man = this.physics.add.sprite(this.w*10/20, this.h*10/20, 'man').setCollideWorldBounds(true);
+            sink.setPushable(false);
+        this.man = this.physics.add.sprite(this.w*10/20, this.h*10/20, 'man').setCollideWorldBounds(true);
 
+        this.physics.add.collider(this.man, bed);
+        this.physics.add.collider(this.man, dresser);
+        this.physics.add.collider(this.man, mirror);
+        this.physics.add.collider(this.man, coffee);
+        this.physics.add.collider(this.man, sink);
+        this.physics.add.collider(this.man, coffeeMachine);
+        this.physics.add.collider(this.man, mat);
+        
+        this.input.on('pointerdown', () => {
+            // this.man.setVelocity(200, 0);
+            console.log(this.man.rotation);
+            let xR = Math.cos(this.man.rotation);
+            let yR = Math.sin(this.man.rotation);
+
+            this.man.setVelocity(yR*300,-xR*300);
+            this.rotate = false;
+        });
         
         
+        
+    }
+    update(delta){
+        
+        if(this.rotate == true){
+            this.man.rotation = this.rotationNum/100;
+            this.temp = delta;
+            this.rotationNum++;
+        }
+        console.log(delta - this.temp);
+        if((delta - this.temp) >= 1000){
+            this.man.setVelocity(0,0);
+            this.rotate = true;
+        }
+        
+        
+
     }
 }
 
