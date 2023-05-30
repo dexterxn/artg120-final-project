@@ -59,9 +59,11 @@ class Intro extends Phaser.Scene
 class Level1 extends Phaser.Scene
 {   
     man;
+    coffee;
     rotate = true;
     temp = 0;
     rotationNum = 0;
+    inZone = false;
     constructor() {
         super('level1')
     }
@@ -80,6 +82,34 @@ class Level1 extends Phaser.Scene
         this.load.image("man", "assets/Still Man.png");
     }
 
+    pickUpAnimation(item){
+        const chain1 = this.tweens.chain({
+            targets: item,
+            tweens: [
+                {
+                    y: item.y,
+                    scaleX: 1.5,
+                    duration: 300,
+                    ease: 'quad.out'
+                },
+                {
+                    y: item.y,
+                    scaleX: 1,
+                    duration: 300,
+                    ease: 'quad.in'
+                },
+                // {
+                //     y: item.y + 20,
+                //     scaleX: 1,
+                //     duration: 500,
+                //     ease: 'bounce.out'
+                // },
+            ],
+            loop: 1,
+            loopDelay: 300,
+        });
+    }
+
     create ()
     {
         this.w = this.game.config.width;
@@ -89,8 +119,9 @@ class Level1 extends Phaser.Scene
         // const bg = this.add.image(this.w/2, this.h/2, 'bg');
         const bed = this.physics.add.sprite(this.w*16/20, this.h*4/5, 'bed').setCollideWorldBounds(true);
             bed.setPushable(false);
-        const coffee = this.physics.add.sprite(this.w*7/20, this.h*2/20, 'coffee').setCollideWorldBounds(true);
-            coffee.setPushable(false);
+        // this.coffee = this.physics.add.sprite(this.w*7/20, this.h*2/20, 'coffee').setCollideWorldBounds(true);
+        //     this.coffee.setPushable(false);
+        this.coffee = this.physics.add.staticImage(this.w*7/20, this.h*2/20, 'coffee');
         const coffeeMachine = this.physics.add.sprite(this.w*1.5/20, this.h*7/20, 'coffeeMachine').setCollideWorldBounds(true);
             coffeeMachine.setPushable(false);
         // const door = this.physics.add.sprite(this.w*10/20, this.h*7/20, 'door').setCollideWorldBounds(true);
@@ -109,11 +140,49 @@ class Level1 extends Phaser.Scene
         this.physics.add.collider(this.man, bed);
         this.physics.add.collider(this.man, dresser);
         this.physics.add.collider(this.man, mirror);
-        this.physics.add.collider(this.man, coffee);
+        this.physics.add.collider(this.man, mat);
+
+        // this.physics.add.collider(this.man, this.coffee);
+        // this.physics.collide(this.man, coffee,this.pickUpAnimation(coffee));
+
         this.physics.add.collider(this.man, sink);
         this.physics.add.collider(this.man, coffeeMachine);
-        this.physics.add.collider(this.man, mat);
-        
+
+        console.log(this.man.body.touching);
+
+        this.physics.add.overlap(this.coffee, this.man, function () {
+            // pickUpAnimation(this.coffee);
+            this.inZone = true;
+            console.log("setting In Zone to true");
+
+            // const chain1 = this.tweens.chain({
+            //     targets: this.coffee,
+            //     tweens: [
+            //         {
+            //             y: this.coffee.y,
+            //             scaleX: 1.5,
+            //             duration: 300,
+            //             ease: 'quad.out'
+            //         },
+            //         {
+            //             y: this.coffee.y,
+            //             scaleX: 1,
+            //             duration: 300,
+            //             ease: 'quad.in'
+            //         },
+            //         // {
+            //         //     y: item.y + 20,
+            //         //     scaleX: 1,
+            //         //     duration: 500,
+            //         //     ease: 'bounce.out'
+            //         // },
+            //     ],
+            //     loop: 1,
+            //     loopDelay: 300,
+            // });
+
+        });
+
         this.input.on('pointerdown', () => {
             // this.man.setVelocity(200, 0);
             console.log(this.man.rotation);
@@ -125,24 +194,32 @@ class Level1 extends Phaser.Scene
         });
         
         
+        const text1 = this.add.text(this.w/8, this.h*3/4, 'Goal: \n - get water from the sink\n - get coffee\n - put it into the coffee machine', { align: 'left' }, 0xFF69B4);
+        text1.setFontSize(50);
+        text1.setTint(0x000000);   
+        
         
     }
     update(delta){
-        
+
+        if (this.inZone == true) {
+            pickUpAnimation(this.coffee);
+            console.log("It's overlapping!");
+            // this.inZone = false;
+        }
+        // console.log(this.man.body.touching);
         if(this.rotate == true){
             this.man.rotation = this.rotationNum/100;
             this.temp = delta;
             this.rotationNum++;
         }
-        console.log(delta - this.temp);
+
         if((delta - this.temp) >= 1000){
             this.man.setVelocity(0,0);
             this.rotate = true;
         }
-        
-        
-
     }
+    
 }
 
 
