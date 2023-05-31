@@ -51,7 +51,7 @@ class Intro extends Phaser.Scene
         });
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
-            this.time.delayedCall(1000, () => this.scene.start('level2'));
+            this.time.delayedCall(1000, () => this.scene.start('level1'));
         });
     }
 }
@@ -69,7 +69,6 @@ class Level1 extends Phaser.Scene
     }
     preload ()
     {
-        this.load.image("bg", "assets/S1 background.png");
         this.load.image("bed", "assets/S1 Bed.png");
         this.load.image("coffee", "assets/S1 Coffee.png");
         this.load.image("coffeeMachine", "assets/S1 CoffeeMachine.png");
@@ -198,9 +197,15 @@ class Level1 extends Phaser.Scene
         text1.setFontSize(50);
         text1.setTint(0x000000);   
         
+        this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         
     }
     update(delta){
+
+        if(this.keyP.isDown){
+            this.cameras.main.fade(1000, 0,0,0);
+            this.time.delayedCall(1000, () => this.scene.start('level2'));
+        }
 
         if (this.inZone == true) {
             pickUpAnimation(this.coffee);
@@ -231,18 +236,20 @@ class Level2 extends Phaser.Scene{
     }
     preload ()
     {
-        this.load.image("bg", "assets/S2 Background.png");
+        this.load.image("bg2", "assets/S2 Background.png");
         this.load.image("busStop", "assets/S2 Bus Stop.png");
         this.load.image("bus", "assets/S2 Bus.png");
         this.load.image("gameOver", "assets/Game Over.png");
+        this.load.image("player", "assets/S1 Player.png");
     }
 
     create ()
     {
         this.w = this.game.config.width;
         this.h = this.game.config.height;
-        this.add.image(this.w/2,this.h/2,'bg');
-        
+        this.add.image(this.w/2,this.h/2,'bg2');
+        this.add.image(this.w*0.8, this.h*0.8, 'player');
+
         this.bus = this.physics.add.staticImage(this.w*15/20, this.h*3.5/20, 'bus');
         this.busStop = this.physics.add.staticImage(this.w*2.5/20, this.h*10/20, 'busStop');
         this.gameOver = this.physics.add.staticImage(this.w/2, -300, 'gameOver');
