@@ -246,6 +246,9 @@ class Level2 extends Phaser.Scene{
         this.bus = this.physics.add.staticImage(this.w*15/20, this.h*3.5/20, 'bus');
         this.busStop = this.physics.add.staticImage(this.w*2.5/20, this.h*10/20, 'busStop');
         this.gameOver = this.physics.add.staticImage(this.w/2, -300, 'gameOver');
+        let text = this.add.text(this.w * 0.8, -50, "Tap to Restart");
+        text.setFontSize(50);
+
 
         this.tweens.add({
             targets: this.bus,
@@ -270,15 +273,22 @@ class Level2 extends Phaser.Scene{
                     duration: 400,
                     ease: 'bounce.out'
                 },
-                // {
-                //     y: item.y + 20,
-                //     scaleX: 1,
-                //     duration: 500,
-                //     ease: 'bounce.out'
-                // },
+                {
+                    targets: text,
+                    x: this.w*0.7,
+                    y: this.h/2,
+                    scaleX: 1,
+                    duration: 500,
+                    ease: 'quad.out'
+                },
             ],
             loop: 0,
             loopDelay: 300,
+        });
+
+        this.input.on('pointerdown', () => {
+            this.cameras.main.fade(1000, 0,0,0);
+            this.time.delayedCall(1000, () => this.scene.start('intro'));
         });
 
     }
