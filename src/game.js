@@ -51,7 +51,7 @@ class Intro extends Phaser.Scene
         });
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
-            this.time.delayedCall(1000, () => this.scene.start('level1'));
+            this.time.delayedCall(1000, () => this.scene.start('level2'));
         });
     }
 }
@@ -222,7 +222,67 @@ class Level1 extends Phaser.Scene
     
 }
 
+class Level2 extends Phaser.Scene{
+    bus;
+    busStop;
+    gameOver;
+    constructor() {
+        super('level2')
+    }
+    preload ()
+    {
+        this.load.image("bg", "assets/S2 Background.png");
+        this.load.image("busStop", "assets/S2 Bus Stop.png");
+        this.load.image("bus", "assets/S2 Bus.png");
+        this.load.image("gameOver", "assets/Game Over.png");
+    }
 
+    create ()
+    {
+        this.w = this.game.config.width;
+        this.h = this.game.config.height;
+        this.add.image(this.w/2,this.h/2,'bg');
+        
+        this.bus = this.physics.add.staticImage(this.w*15/20, this.h*3.5/20, 'bus');
+        this.busStop = this.physics.add.staticImage(this.w*2.5/20, this.h*10/20, 'busStop');
+        this.gameOver = this.physics.add.staticImage(this.w/2, -300, 'gameOver');
+
+        this.tweens.add({
+            targets: this.bus,
+            
+            repeat: 0
+        });
+        const chain1 = this.tweens.chain({
+            targets: this.bus,
+            tweens: [
+                {
+                    x: -this.bus.width,
+                    flipX: false,
+                    yoyo: false,
+                    duration: 4000,
+                },
+                {
+                    targets: this.gameOver,
+                    x: this.w/2,
+                    y: this.h/2,
+                    scaleX: 0.5,
+                    scaleY: 0.5,
+                    duration: 400,
+                    ease: 'bounce.out'
+                },
+                // {
+                //     y: item.y + 20,
+                //     scaleX: 1,
+                //     duration: 500,
+                //     ease: 'bounce.out'
+                // },
+            ],
+            loop: 0,
+            loopDelay: 300,
+        });
+
+    }
+}
 
 const config = {
     scale:{
@@ -240,7 +300,7 @@ const config = {
         default: 'arcade',
         arcade: { debug: true }
     },
-    scene: [Intro, Level1]
+    scene: [Intro, Level1, Level2]
     
 };
 
