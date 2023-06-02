@@ -77,7 +77,7 @@ class Level1 extends Phaser.Scene
         this.load.image("kitchen", "assets/S1 Kitchen.png");
         this.load.image("mat", "assets/S1 Mat.png");
         this.load.image("mirror", "assets/S1 Mirror.png");
-        this.load.image("sink", "assets/S1 sink.png");
+        this.load.image("sink", "assets/S1 Sink.png");
         this.load.image("man", "assets/S1 Player.png");
     }
 
