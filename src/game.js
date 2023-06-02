@@ -90,6 +90,9 @@ class Level1 extends TestScene
         this.load.image("mirror", "assets/S1 Mirror.png");
         this.load.image("sink", "assets/S1 Sink.png");
         this.load.image("man", "assets/S1 Player.png");
+        this.load.image("wall1", "assets/Wall 1.png");
+        this.load.image("wall2", "assets/Wall 2.png");
+        this.load.image("door1", "assets/Door.png");
 
         this.load.audio('bgMusic', 'assets/bgSound.wav');
 
@@ -105,7 +108,12 @@ class Level1 extends TestScene
         const kitchen = this.add.image(this.w*6.5/20, this.h*5/20, 'kitchen');
         const bed = this.physics.add.sprite(this.w*16/20, this.h*4/5, 'bed').setCollideWorldBounds(true);
             bed.setPushable(false);
-        const door = this.add.image(this.w*13.5/20, this.h*10/20, 'door');
+        // const door = this.add.image(this.w*13.5/20, this.h*10/20, 'door');
+
+        const wall1 = this.physics.add.sprite(this.w*12.5/20, this.h*3.5/20, 'wall1').setPushable(false).setCollideWorldBounds(true);
+        const wall2 = this.physics.add.sprite(this.w*12.5/20, this.h*15.5/20, 'wall2').setPushable(false).setCollideWorldBounds(true);
+        const door1 = this.physics.add.sprite(this.w*13.9/20, this.h*6.8/20, 'door1').setPushable(false).setCollideWorldBounds(true);
+
         const dresser = this.physics.add.sprite(this.w*19/20, 0, 'dresser').setCollideWorldBounds(true);
             dresser.setPushable(false);
         const mat = this.physics.add.sprite(0, this.h*17/20, 'mat').setCollideWorldBounds(true);
@@ -125,6 +133,9 @@ class Level1 extends TestScene
         this.physics.add.collider(this.man, dresser);
         this.physics.add.collider(this.man, mirror);
         this.physics.add.collider(this.man, mat);
+        this.physics.add.collider(this.man, wall1);
+        this.physics.add.collider(this.man, wall2);
+        this.physics.add.collider(this.man, door1);
 
         this.music = this.sound.add('bgMusic');
         this.music.loop = true;
@@ -296,7 +307,7 @@ const config = {
     parent: 'phaser-example',
     physics: {
         default: 'arcade',
-        arcade: { debug: false }
+        arcade: { debug: true }
     },
     scene: [Intro, Level1, Level2]
     
