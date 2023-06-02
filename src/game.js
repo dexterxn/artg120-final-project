@@ -79,6 +79,8 @@ class Level1 extends Phaser.Scene
         this.load.image("mirror", "assets/S1 Mirror.png");
         this.load.image("sink", "assets/S1 Sink.png");
         this.load.image("man", "assets/S1 Player.png");
+
+        this.load.audio('bgMusic', 'assets/bgSound.wav');
     }
 
     pickUpAnimation(item){
@@ -148,6 +150,10 @@ class Level1 extends Phaser.Scene
         this.physics.add.collider(this.man, coffeeMachine);
 
         console.log(this.man.body.touching);
+
+        const music = this.sound.add('bgMusic');
+
+        music.play();
 
         this.physics.add.overlap(this.coffee, this.man, function () {
             // pickUpAnimation(this.coffee);
