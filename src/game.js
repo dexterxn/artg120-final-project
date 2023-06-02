@@ -60,11 +60,21 @@ class Level1 extends TestScene
 {   
     man;
     coffee;
+    sink;
+    coffeeMachine;
     rotate = true;
+    music;
     temp = 0;
     rotationNum = 0;
-    inZone = false;
+    touchCoffee = false;
     tapCoffee = false;
+    touchSink = false;
+    tapSink = false;
+    touchCM = false;
+    tapCM = false;
+    hasCoffee = false;
+    hasWater = false;
+    madeCoffee = false;
     constructor() {
         super('level1')
     }
@@ -91,26 +101,24 @@ class Level1 extends TestScene
         this.w = this.game.config.width;
         this.h = this.game.config.height;
 
+        // not movable obj in room
         const kitchen = this.add.image(this.w*6.5/20, this.h*5/20, 'kitchen');
-        // const bg = this.add.image(this.w/2, this.h/2, 'bg');
         const bed = this.physics.add.sprite(this.w*16/20, this.h*4/5, 'bed').setCollideWorldBounds(true);
             bed.setPushable(false);
-        // this.coffee = this.physics.add.sprite(this.w*7/20, this.h*2/20, 'coffee').setCollideWorldBounds(true);
-        //     this.coffee.setPushable(false);
-        this.coffee = this.physics.add.staticImage(this.w*7/20, this.h*2/20, 'coffee');
-        const coffeeMachine = this.physics.add.sprite(this.w*1.5/20, this.h*7/20, 'coffeeMachine').setCollideWorldBounds(true);
-            coffeeMachine.setPushable(false);
-        // const door = this.physics.add.sprite(this.w*10/20, this.h*7/20, 'door').setCollideWorldBounds(true);
         const door = this.add.image(this.w*13.5/20, this.h*10/20, 'door');
-        
         const dresser = this.physics.add.sprite(this.w*19/20, 0, 'dresser').setCollideWorldBounds(true);
             dresser.setPushable(false);
         const mat = this.physics.add.sprite(0, this.h*17/20, 'mat').setCollideWorldBounds(true);
             mat.setPushable(false);
         const mirror = this.physics.add.sprite(this.w*15/20, this.h*2/20, 'mirror').setCollideWorldBounds(true);
             mirror.setPushable(false);
-        const sink = this.physics.add.sprite(this.w*10/20, this.h*2/20, 'sink').setCollideWorldBounds(true);
-            sink.setPushable(false);
+        
+        // interactive bits
+        this.coffee = this.physics.add.staticImage(this.w*7/20, this.h*2/20, 'coffee');
+        this.sink = this.physics.add.staticImage(this.w*10/20, this.h*2/20, 'sink');
+        this.coffeeMachine = this.physics.add.staticImage(this.w*1.5/20, this.h*7/20, 'coffeeMachine');
+        
+        // the player
         this.man = this.physics.add.sprite(this.w*10/20, this.h*10/20, 'man').setCollideWorldBounds(true);
 
         this.physics.add.collider(this.man, bed);
@@ -118,24 +126,33 @@ class Level1 extends TestScene
         this.physics.add.collider(this.man, mirror);
         this.physics.add.collider(this.man, mat);
 
-        // this.physics.add.collider(this.man, this.coffee);
-        // this.physics.collide(this.man, coffee,this.pickUpAnimation(coffee));
+        this.music = this.sound.add('bgMusic');
+        this.music.loop = true;
+        this.music.play();
 
-        this.physics.add.collider(this.man, sink);
-        this.physics.add.collider(this.man, coffeeMachine);
-
-        console.log(this.man.body.touching);
-
-        // const music = this.sound.add('bgMusic');
-        // music.loop = true;
-        // music.play();
-        // this.pickUpAnimation(this.coffee);
+        // interactive coffee
         this.coffee.setInteractive();
         this.coffee.on('pointerdown', () => {
             this.tapCoffee = true; 
         });
         this.physics.add.overlap(this.coffee, this.man, ()=> {
-            this.inZone = true;
+            this.touchCoffee = true;
+        });
+        // interactive sink
+        this.sink.setInteractive();
+        this.sink.on('pointerdown', () => {
+            this.tapSink = true; 
+        });
+        this.physics.add.overlap(this.sink, this.man, ()=> {
+            this.touchSink = true;
+        });
+        // interactive coffeeMachine
+        this.coffeeMachine.setInteractive();
+        this.coffeeMachine.on('pointerdown', () => {
+            this.tapCM = true; 
+        });
+        this.physics.add.overlap(this.coffeeMachine, this.man, ()=> {
+            this.touchCM = true;
         });
 
         this.input.on('pointerdown', () => {
@@ -161,16 +178,15 @@ class Level1 extends TestScene
         
     }
     update(delta){
-        if(this.inZone && this.tapCoffee){
+        if(this.touchCoffee && this.tapCoffee){this.pickUpAnimation(this.coffee); this.hasCoffee = true;}
+        if(this.touchSink && this.tapSink){this.pickUpAnimation(this.sink); this.hasWater = true;}
+        if(this.touchCM && this.tapCM){this.pickUpAnimation(this.coffeeMachine); this.madeCoffee = true;}
 
-            this.pickUpAnimation(this.coffee);
-        }
-        
         if (this.keyA.isDown){this.man.setVelocityX(-300);}
         if (this.keyD.isDown){this.man.setVelocityX(300);}
         if (this.keyW.isDown){this.man.setVelocityY(-300);}
         if (this.keyS.isDown){this.man.setVelocityY(300);}
-        if(this.keyP.isDown){
+        if (this.keyP.isDown || this.hasCoffee && this.hasWater && this.madeCoffee){
             this.cameras.main.fade(1000, 0,0,0);
             this.time.delayedCall(1000, () => this.scene.start('level2'));
         }
@@ -184,8 +200,9 @@ class Level1 extends TestScene
             this.man.setVelocity(0,0);
             this.rotate = true;
         }
-        this.inZone = false;
-        this.tapCoffee = false;
+        this.touchCoffee = false; this.tapCoffee = false;
+        this.touchSink = false; this.tapSink = false;
+        this.touchCM = false; this.tapCM = false;
     }
     
 }
@@ -259,6 +276,7 @@ class Level2 extends Phaser.Scene{
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
             this.time.delayedCall(1000, () => this.scene.start('intro'));
+            this.sound.get('bgMusic').stop();
         });
 
     }
@@ -278,7 +296,7 @@ const config = {
     parent: 'phaser-example',
     physics: {
         default: 'arcade',
-        arcade: { debug: true }
+        arcade: { debug: false }
     },
     scene: [Intro, Level1, Level2]
     

@@ -1,7 +1,6 @@
 class TestScene extends Phaser.Scene {
 
     pickUpAnimation(item){
-        console.log("Picked up the coffee item!");
         const chain1 = this.tweens.chain({
             targets: item,
             tweens: [
