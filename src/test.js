@@ -17,7 +17,7 @@ class TestScene extends Phaser.Scene {
                     ease: 'quad.in'
                 },
             ],
-            loop: 1,
+            loop: 0,
             loopDelay: 300,
         });
     }

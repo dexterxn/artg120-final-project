@@ -191,7 +191,7 @@ class Level1 extends TestScene
     update(delta){
         if(this.touchCoffee && this.tapCoffee){this.pickUpAnimation(this.coffee); this.hasCoffee = true;}
         if(this.touchSink && this.tapSink){this.pickUpAnimation(this.sink); this.hasWater = true;}
-        if(this.touchCM && this.tapCM){this.pickUpAnimation(this.coffeeMachine); this.madeCoffee = true;}
+        if(this.touchCM && this.tapCM && this.hasCoffee && this.hasWater){this.pickUpAnimation(this.coffeeMachine); this.madeCoffee = true;}
 
         if (this.keyA.isDown){this.man.setVelocityX(-300);}
         if (this.keyD.isDown){this.man.setVelocityX(300);}
