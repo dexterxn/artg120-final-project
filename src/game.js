@@ -56,7 +56,7 @@ class Intro extends Phaser.Scene
     }
 }
 
-class Level1 extends Phaser.Scene
+class Level1 extends TestScene
 {   
     man;
     coffee;
@@ -64,6 +64,7 @@ class Level1 extends Phaser.Scene
     temp = 0;
     rotationNum = 0;
     inZone = false;
+    tapCoffee = false;
     constructor() {
         super('level1')
     }
@@ -81,34 +82,8 @@ class Level1 extends Phaser.Scene
         this.load.image("man", "assets/S1 Player.png");
 
         this.load.audio('bgMusic', 'assets/bgSound.wav');
-    }
 
-    pickUpAnimation(item){
-        const chain1 = this.tweens.chain({
-            targets: item,
-            tweens: [
-                {
-                    y: item.y,
-                    scaleX: 1.5,
-                    duration: 300,
-                    ease: 'quad.out'
-                },
-                {
-                    y: item.y,
-                    scaleX: 1,
-                    duration: 300,
-                    ease: 'quad.in'
-                },
-                // {
-                //     y: item.y + 20,
-                //     scaleX: 1,
-                //     duration: 500,
-                //     ease: 'bounce.out'
-                // },
-            ],
-            loop: 1,
-            loopDelay: 300,
-        });
+        this.load.script('t','test.js')
     }
 
     create ()
@@ -151,41 +126,16 @@ class Level1 extends Phaser.Scene
 
         console.log(this.man.body.touching);
 
-        const music = this.sound.add('bgMusic');
-
-        music.play();
-
-        this.physics.add.overlap(this.coffee, this.man, function () {
-            // pickUpAnimation(this.coffee);
+        // const music = this.sound.add('bgMusic');
+        // music.loop = true;
+        // music.play();
+        // this.pickUpAnimation(this.coffee);
+        this.coffee.setInteractive();
+        this.coffee.on('pointerdown', () => {
+            this.tapCoffee = true; 
+        });
+        this.physics.add.overlap(this.coffee, this.man, ()=> {
             this.inZone = true;
-            console.log("setting In Zone to true");
-
-            // const chain1 = this.tweens.chain({
-            //     targets: this.coffee,
-            //     tweens: [
-            //         {
-            //             y: this.coffee.y,
-            //             scaleX: 1.5,
-            //             duration: 300,
-            //             ease: 'quad.out'
-            //         },
-            //         {
-            //             y: this.coffee.y,
-            //             scaleX: 1,
-            //             duration: 300,
-            //             ease: 'quad.in'
-            //         },
-            //         // {
-            //         //     y: item.y + 20,
-            //         //     scaleX: 1,
-            //         //     duration: 500,
-            //         //     ease: 'bounce.out'
-            //         // },
-            //     ],
-            //     loop: 1,
-            //     loopDelay: 300,
-            // });
-
         });
 
         this.input.on('pointerdown', () => {
@@ -204,21 +154,26 @@ class Level1 extends Phaser.Scene
         text1.setTint(0x000000);   
         
         this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+        this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         
     }
     update(delta){
+        if(this.inZone && this.tapCoffee){
 
+            this.pickUpAnimation(this.coffee);
+        }
+        
+        if (this.keyA.isDown){this.man.setVelocityX(-300);}
+        if (this.keyD.isDown){this.man.setVelocityX(300);}
+        if (this.keyW.isDown){this.man.setVelocityY(-300);}
+        if (this.keyS.isDown){this.man.setVelocityY(300);}
         if(this.keyP.isDown){
             this.cameras.main.fade(1000, 0,0,0);
             this.time.delayedCall(1000, () => this.scene.start('level2'));
         }
-
-        if (this.inZone == true) {
-            pickUpAnimation(this.coffee);
-            console.log("It's overlapping!");
-            // this.inZone = false;
-        }
-        // console.log(this.man.body.touching);
         if(this.rotate == true){
             this.man.rotation = this.rotationNum/100;
             this.temp = delta;
@@ -229,6 +184,8 @@ class Level1 extends Phaser.Scene
             this.man.setVelocity(0,0);
             this.rotate = true;
         }
+        this.inZone = false;
+        this.tapCoffee = false;
     }
     
 }
