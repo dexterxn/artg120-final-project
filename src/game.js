@@ -25,6 +25,7 @@ class Intro extends Phaser.Scene
 
         this.load.script('t','test.js')
 
+
         this.load.image("bg2", "assets/S2 Background.png");
         this.load.image("busStop", "assets/S2 Bus Stop.png");
         this.load.image("bus", "assets/S2 Bus.png");
@@ -75,7 +76,7 @@ class Intro extends Phaser.Scene
             loopDelay: 300,
         });
 
-        const text1 = this.add.text(this.w/5, this.h*3/4, 'Controls: Press the left mouse button to move.\nCreated by: Zane Chaplin, Michael Law, Dexter Zhang', { align: 'center' }, 0xFF69B4);
+        const text1 = this.add.text(this.w/5, this.h*3/4, 'Controls: Press the left mouse button to move.\nUse left mouse to pickup items next to you.\nCreated by: Zane Chaplin, Michael Law, Dexter Zhang', { align: 'center' }, 0xFF69B4);
         text1.setFontSize(50);
         text1.setTint(0x000000);  
 
@@ -195,9 +196,12 @@ class Level1 extends TestScene
         });
         
         
-        const text1 = this.add.text(this.w/8, this.h*3/4, 'Goal: \n - get water from the sink\n - get coffee\n - put it into the coffee machine', { align: 'left' }, 0xFF69B4);
-        text1.setFontSize(50);
-        text1.setTint(0x000000);   
+        this.text1 = this.add.text(this.w/8, this.h*3/4, 'Goal:', { align: 'left' , color: "#000000", fontSize: 50});
+        this.text2 = this.add.text(this.w/8, this.h*3.1/4, ' - get water from the sink', { align: 'left' , color: "#000000", fontSize: 50});
+        this.text3 = this.add.text(this.w/8, this.h*3.2/4, ' - get coffee', { align: 'left' , color: "#000000", fontSize: 50});
+        this.text4 = this.add.text(this.w/8, this.h*3.3/4, ' - put it into the coffee machine', { align: 'left' , color: "#000000", fontSize: 50});
+        // text1.setFontSize(50);
+        // text1.setTint(0x000000);   
         
         this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         // for cheatcodes
@@ -208,9 +212,9 @@ class Level1 extends TestScene
         
     }
     update(delta){
-        if(this.touchCoffee && this.tapCoffee){this.pickUpAnimation(this.coffee); this.hasCoffee = true;}
-        if(this.touchSink && this.tapSink){this.pickUpAnimation(this.sink); this.hasWater = true;}
-        if(this.touchCM && this.tapCM && this.hasCoffee && this.hasWater){this.pickUpAnimation(this.coffeeMachine); this.madeCoffee = true;}
+        if(this.touchSink && this.tapSink){this.pickUpAnimation(this.sink); this.hasWater = true; this.text2.setColor("#00b300");}
+        if(this.touchCoffee && this.tapCoffee){this.pickUpAnimation(this.coffee); this.hasCoffee = true; this.text3.setColor("#00b300");}
+        if(this.touchCM && this.tapCM && this.hasCoffee && this.hasWater){this.pickUpAnimation(this.coffeeMachine); this.madeCoffee = true; this.text4.setColor("#00b300");}
 
         // for cheatcodes
         // if (this.keyA.isDown){this.man.setVelocityX(-300);}
