@@ -76,7 +76,7 @@ class Intro extends Phaser.Scene
             loopDelay: 300,
         });
 
-        const text1 = this.add.text(this.w/5, this.h*3/4, 'Controls: Press the left mouse button to move.\nUse left mouse to pickup items next to you.\nCreated by: Zane Chaplin, Michael Law, Dexter Zhang', { align: 'center' }, 0xFF69B4);
+        const text1 = this.add.text(this.w/5, this.h*3/4, 'Controls: Press the left mouse button to move.\nUse left mouse to interact with items next to you.\nCreated by: Zane Chaplin, Michael Law, Dexter Zhang', { align: 'center' }, 0xFF69B4);
         text1.setFontSize(50);
         text1.setTint(0x000000);  
 
@@ -106,6 +106,8 @@ class Level1 extends TestScene
     hasCoffee = false;
     hasWater = false;
     madeCoffee = false;
+    tapMat = false;
+    touchMat = false;
     constructor() {
         super('level1')
     }
@@ -132,8 +134,8 @@ class Level1 extends TestScene
 
         const dresser = this.physics.add.sprite(this.w*19/20, 0, 'dresser').setCollideWorldBounds(true);
             dresser.setPushable(false);
-        const mat = this.physics.add.sprite(0, this.h*17/20, 'mat').setCollideWorldBounds(true);
-            mat.setPushable(false);
+        // const mat = this.physics.add.sprite(0, this.h*17/20, 'mat').setCollideWorldBounds(true);
+        //     mat.setPushable(false);
         const mirror = this.physics.add.sprite(this.w*15/20, this.h*2/20, 'mirror').setCollideWorldBounds(true);
             mirror.setPushable(false);
         
@@ -141,6 +143,7 @@ class Level1 extends TestScene
         this.coffee = this.physics.add.staticImage(this.w*7/20, this.h*2/20, 'coffee');
         this.sink = this.physics.add.staticImage(this.w*10/20, this.h*2/20, 'sink');
         this.coffeeMachine = this.physics.add.staticImage(this.w*1.5/20, this.h*7/20, 'coffeeMachine');
+        this.mat = this.physics.add.staticImage(this.w*1/20, this.h*17/20, 'mat');
         
         // the player
         this.man = this.physics.add.sprite(this.w*15/20, this.h*10/20, 'man').setCollideWorldBounds(true);
@@ -148,7 +151,7 @@ class Level1 extends TestScene
         this.physics.add.collider(this.man, bed);
         this.physics.add.collider(this.man, dresser);
         this.physics.add.collider(this.man, mirror);
-        this.physics.add.collider(this.man, mat);
+        // this.physics.add.collider(this.man, mat);
         this.physics.add.collider(this.man, wall1);
         this.physics.add.collider(this.man, wall2);
         this.physics.add.collider(this.man, door1);
@@ -184,6 +187,10 @@ class Level1 extends TestScene
         this.physics.add.overlap(this.coffeeMachine, this.man, ()=> {
             this.touchCM = true;
         });
+        // interactive mat
+        this.physics.add.overlap(this.mat, this.man,()=>{
+            this.touchMat = true;
+        });
 
         this.input.on('pointerdown', () => {
             // this.man.setVelocity(200, 0);
@@ -200,6 +207,7 @@ class Level1 extends TestScene
         this.text2 = this.add.text(this.w/8, this.h*3.1/4, ' - get water from the sink', { align: 'left' , color: "#000000", fontSize: 50});
         this.text3 = this.add.text(this.w/8, this.h*3.2/4, ' - get coffee', { align: 'left' , color: "#000000", fontSize: 50});
         this.text4 = this.add.text(this.w/8, this.h*3.3/4, ' - put it into the coffee machine', { align: 'left' , color: "#000000", fontSize: 50});
+        this.text5 = this.add.text(this.w/8, this.h*3.4/4, ' - leave for work', { align: 'left' , color: "#000000", fontSize: 50});
         // text1.setFontSize(50);
         // text1.setTint(0x000000);   
         
@@ -222,7 +230,7 @@ class Level1 extends TestScene
         // if (this.keyW.isDown){this.man.setVelocityY(-300);}
         // if (this.keyS.isDown){this.man.setVelocityY(300);}
         // if (this.keyP.isDown || this.hasCoffee && this.hasWater && this.madeCoffee){
-        if(this.hasCoffee && this.hasWater && this.madeCoffee){
+        if(this.hasCoffee && this.hasWater && this.madeCoffee && this.touchMat){
             this.cameras.main.fade(1000, 0,0,0);
             this.time.delayedCall(1000, () => this.scene.start('level2'));
             this.touchCoffee = false;
@@ -235,6 +243,7 @@ class Level1 extends TestScene
             this.hasWater = false;
             this.madeCoffee = false;
             // this.music.stop();
+            this.touchMat = false;
         }
         if(this.rotate == true){
             this.man.rotation = this.rotationNum/100;
@@ -249,6 +258,7 @@ class Level1 extends TestScene
         this.touchCoffee = false; this.tapCoffee = false;
         this.touchSink = false; this.tapSink = false;
         this.touchCM = false; this.tapCM = false;
+        this.touchMat = false;
     }
     
 }
@@ -337,7 +347,7 @@ class Level2 extends Phaser.Scene{
 
         this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
-        const text1 = this.add.text(this.w/8, this.h*3/4, 'Goal: \n - get to the bus before bus leaves.\n', { align: 'left' }, 0xFF69B4);
+        const text1 = this.add.text(this.w/8, this.h*3/4, 'Goal: \n - get to the bus before it leaves!\n', { align: 'left' }, 0xFF69B4);
         text1.setFontSize(50);
         text1.setTint(0x000000);   
 
