@@ -49,6 +49,11 @@ class Intro extends Phaser.Scene
             loop: -1,
             loopDelay: 300,
         });
+
+        const text1 = this.add.text(this.w/5, this.h*3/4, 'Created by: Zane Chaplin, Michael Law, Dexter Zhang', { align: 'center' }, 0xFF69B4);
+        text1.setFontSize(50);
+        text1.setTint(0x000000);  
+
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
             this.time.delayedCall(1000, () => this.scene.start('level1'));
@@ -200,6 +205,16 @@ class Level1 extends TestScene
         if (this.keyP.isDown || this.hasCoffee && this.hasWater && this.madeCoffee){
             this.cameras.main.fade(1000, 0,0,0);
             this.time.delayedCall(1000, () => this.scene.start('level2'));
+            this.touchCoffee = false;
+            this.tapCoffee = false;
+            this.touchSink = false;
+            this.tapSink = false;
+            this.touchCM = false;
+            this.tapCM = false;
+            this.hasCoffee = false;
+            this.hasWater = false;
+            this.madeCoffee = false;
+            this.music.stop();
         }
         if(this.rotate == true){
             this.man.rotation = this.rotationNum/100;
@@ -219,9 +234,14 @@ class Level1 extends TestScene
 }
 
 class Level2 extends Phaser.Scene{
+    man;
     bus;
     busStop;
     gameOver;
+    rotate = true;
+    temp = 0;
+    rotationNum = 0;
+
     constructor() {
         super('level2')
     }
@@ -231,7 +251,7 @@ class Level2 extends Phaser.Scene{
         this.load.image("busStop", "assets/S2 Bus Stop.png");
         this.load.image("bus", "assets/S2 Bus.png");
         this.load.image("gameOver", "assets/Game Over.png");
-        this.load.image("player", "assets/S1 Player.png");
+        // this.load.image("player", "assets/S1 Player.png");
     }
 
     create ()
@@ -239,12 +259,14 @@ class Level2 extends Phaser.Scene{
         this.w = this.game.config.width;
         this.h = this.game.config.height;
         this.add.image(this.w/2,this.h/2,'bg2');
-        this.add.image(this.w*0.8, this.h*0.8, 'player');
+        // this.add.image(this.w*0.8, this.h*0.8, 'player');
+        this.man = this.physics.add.sprite(this.w*0.8, this.h*0.8, 'man').setCollideWorldBounds(true);
+
 
         this.bus = this.physics.add.staticImage(this.w*15/20, this.h*3.5/20, 'bus');
         this.busStop = this.physics.add.staticImage(this.w*2.5/20, this.h*10/20, 'busStop');
         this.gameOver = this.physics.add.staticImage(this.w/2, -300, 'gameOver');
-        let text = this.add.text(this.w * 0.8, -50, "Tap to Restart");
+        let text = this.add.text(this.w * 0.8, -50, "Press 'p' to Restart");
         text.setFontSize(50);
 
 
@@ -284,12 +306,41 @@ class Level2 extends Phaser.Scene{
             loopDelay: 300,
         });
 
+        this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+
+        const text1 = this.add.text(this.w/8, this.h*3/4, 'Goal: \n - get to the bus before bus leaves.\n', { align: 'left' }, 0xFF69B4);
+        text1.setFontSize(50);
+        text1.setTint(0x000000);   
+
         this.input.on('pointerdown', () => {
+            // this.man.setVelocity(200, 0);
+            console.log(this.man.rotation);
+            let xR = Math.cos(this.man.rotation);
+            let yR = Math.sin(this.man.rotation);
+
+            this.man.setVelocity(yR*300,-xR*300);
+            this.rotate = false;
+        });
+
+
+    }
+    update(delta){
+        if (this.keyP.isDown){
             this.cameras.main.fade(1000, 0,0,0);
             this.time.delayedCall(1000, () => this.scene.start('intro'));
             this.sound.get('bgMusic').stop();
-        });
 
+        }
+        if(this.rotate == true){
+            this.man.rotation = this.rotationNum/100;
+            this.temp = delta;
+            this.rotationNum++;
+        }
+
+        if((delta - this.temp) >= 1000){
+            this.man.setVelocity(0,0);
+            this.rotate = true;
+        }
     }
 }
 
