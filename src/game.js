@@ -6,10 +6,35 @@ class Intro extends Phaser.Scene
     preload ()
     {
         this.load.image("start", "assets/start.png");
+
+        this.load.image("bed", "assets/S1 Bed.png");
+        this.load.image("coffee", "assets/S1 Coffee.png");
+        this.load.image("coffeeMachine", "assets/S1 CoffeeMachine.png");
+        this.load.image("door", "assets/S1 Door.png");
+        this.load.image("dresser", "assets/S1 Dresser.png");
+        this.load.image("kitchen", "assets/S1 Kitchen.png");
+        this.load.image("mat", "assets/S1 Mat.png");
+        this.load.image("mirror", "assets/S1 Mirror.png");
+        this.load.image("sink", "assets/S1 Sink.png");
+        this.load.image("man", "assets/S1 Player.png");
+        this.load.image("wall1", "assets/Wall 1.png");
+        this.load.image("wall2", "assets/Wall 2.png");
+        this.load.image("door1", "assets/Door.png");
+
+        this.load.audio('bgMusic', 'assets/bgSound.wav');
+
+        this.load.script('t','test.js')
+
+        this.load.image("bg2", "assets/S2 Background.png");
+        this.load.image("busStop", "assets/S2 Bus Stop.png");
+        this.load.image("bus", "assets/S2 Bus.png");
+        this.load.image("gameOver", "assets/Game Over.png");
     }
 
     create ()
     {
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
+
         this.w = this.game.config.width;
         this.h = this.game.config.height;
         const text = this.add.text(this.w/2, this.h*1/4, 'Right Way', { align: 'center' }, 0xFF69B4);
@@ -85,27 +110,12 @@ class Level1 extends TestScene
     }
     preload ()
     {
-        this.load.image("bed", "assets/S1 Bed.png");
-        this.load.image("coffee", "assets/S1 Coffee.png");
-        this.load.image("coffeeMachine", "assets/S1 CoffeeMachine.png");
-        this.load.image("door", "assets/S1 Door.png");
-        this.load.image("dresser", "assets/S1 Dresser.png");
-        this.load.image("kitchen", "assets/S1 Kitchen.png");
-        this.load.image("mat", "assets/S1 Mat.png");
-        this.load.image("mirror", "assets/S1 Mirror.png");
-        this.load.image("sink", "assets/S1 Sink.png");
-        this.load.image("man", "assets/S1 Player.png");
-        this.load.image("wall1", "assets/Wall 1.png");
-        this.load.image("wall2", "assets/Wall 2.png");
-        this.load.image("door1", "assets/Door.png");
-
-        this.load.audio('bgMusic', 'assets/bgSound.wav');
-
-        this.load.script('t','test.js')
     }
 
     create ()
     {
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
+
         this.w = this.game.config.width;
         this.h = this.game.config.height;
 
@@ -253,15 +263,13 @@ class Level2 extends Phaser.Scene{
     }
     preload ()
     {
-        this.load.image("bg2", "assets/S2 Background.png");
-        this.load.image("busStop", "assets/S2 Bus Stop.png");
-        this.load.image("bus", "assets/S2 Bus.png");
-        this.load.image("gameOver", "assets/Game Over.png");
         // this.load.image("player", "assets/S1 Player.png");
     }
 
     create ()
     {
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
+
         this.w = this.game.config.width;
         this.h = this.game.config.height;
         this.add.image(this.w/2,this.h/2,'bg2');
@@ -285,6 +293,7 @@ class Level2 extends Phaser.Scene{
             targets: this.bus,
             tweens: [
                 {
+                    delay: 1000,
                     // x: -this.bus.width,
                     x: this.w*2.5/20,
                     flipX: false,
