@@ -50,7 +50,7 @@ class Intro extends Phaser.Scene
             loopDelay: 300,
         });
 
-        const text1 = this.add.text(this.w/5, this.h*3/4, 'Created by: Zane Chaplin, Michael Law, Dexter Zhang', { align: 'center' }, 0xFF69B4);
+        const text1 = this.add.text(this.w/5, this.h*3/4, 'Controls: Press the left mouse button to move.\nCreated by: Zane Chaplin, Michael Law, Dexter Zhang', { align: 'center' }, 0xFF69B4);
         text1.setFontSize(50);
         text1.setTint(0x000000);  
 
@@ -132,7 +132,7 @@ class Level1 extends TestScene
         this.coffeeMachine = this.physics.add.staticImage(this.w*1.5/20, this.h*7/20, 'coffeeMachine');
         
         // the player
-        this.man = this.physics.add.sprite(this.w*10/20, this.h*10/20, 'man').setCollideWorldBounds(true);
+        this.man = this.physics.add.sprite(this.w*15/20, this.h*10/20, 'man').setCollideWorldBounds(true);
 
         this.physics.add.collider(this.man, bed);
         this.physics.add.collider(this.man, dresser);
@@ -142,7 +142,10 @@ class Level1 extends TestScene
         this.physics.add.collider(this.man, wall2);
         this.physics.add.collider(this.man, door1);
 
-        this.music = this.sound.add('bgMusic');
+        this.music = this.sound.add('bgMusic',{
+            volume: 0.4,
+            loop: true,
+        });
         this.music.loop = true;
         this.music.play();
 
@@ -187,10 +190,11 @@ class Level1 extends TestScene
         text1.setTint(0x000000);   
         
         this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
-        this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-        this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        // for cheatcodes
+        // this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        // this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        // this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        // this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         
     }
     update(delta){
@@ -198,11 +202,13 @@ class Level1 extends TestScene
         if(this.touchSink && this.tapSink){this.pickUpAnimation(this.sink); this.hasWater = true;}
         if(this.touchCM && this.tapCM && this.hasCoffee && this.hasWater){this.pickUpAnimation(this.coffeeMachine); this.madeCoffee = true;}
 
-        if (this.keyA.isDown){this.man.setVelocityX(-300);}
-        if (this.keyD.isDown){this.man.setVelocityX(300);}
-        if (this.keyW.isDown){this.man.setVelocityY(-300);}
-        if (this.keyS.isDown){this.man.setVelocityY(300);}
-        if (this.keyP.isDown || this.hasCoffee && this.hasWater && this.madeCoffee){
+        // for cheatcodes
+        // if (this.keyA.isDown){this.man.setVelocityX(-300);}
+        // if (this.keyD.isDown){this.man.setVelocityX(300);}
+        // if (this.keyW.isDown){this.man.setVelocityY(-300);}
+        // if (this.keyS.isDown){this.man.setVelocityY(300);}
+        // if (this.keyP.isDown || this.hasCoffee && this.hasWater && this.madeCoffee){
+        if(this.hasCoffee && this.hasWater && this.madeCoffee){
             this.cameras.main.fade(1000, 0,0,0);
             this.time.delayedCall(1000, () => this.scene.start('level2'));
             this.touchCoffee = false;
@@ -214,7 +220,7 @@ class Level1 extends TestScene
             this.hasCoffee = false;
             this.hasWater = false;
             this.madeCoffee = false;
-            this.music.stop();
+            // this.music.stop();
         }
         if(this.rotate == true){
             this.man.rotation = this.rotationNum/100;
@@ -263,7 +269,7 @@ class Level2 extends Phaser.Scene{
         this.man = this.physics.add.sprite(this.w*0.8, this.h*0.8, 'man').setCollideWorldBounds(true);
 
 
-        this.bus = this.physics.add.staticImage(this.w*15/20, this.h*3.5/20, 'bus');
+        this.bus = this.physics.add.staticImage(this.w*23/20, this.h*3.5/20, 'bus');
         this.busStop = this.physics.add.staticImage(this.w*2.5/20, this.h*10/20, 'busStop');
         this.gameOver = this.physics.add.staticImage(this.w/2, -300, 'gameOver');
         let text = this.add.text(this.w * 0.8, -50, "Press 'p' to Restart");
@@ -279,10 +285,20 @@ class Level2 extends Phaser.Scene{
             targets: this.bus,
             tweens: [
                 {
-                    x: -this.bus.width,
+                    // x: -this.bus.width,
+                    x: this.w*2.5/20,
                     flipX: false,
                     yoyo: false,
                     duration: 4000,
+                    ease: "sine.out",
+                },
+                {
+                    delay: 3000,
+                    x: -this.bus.width,
+                    flipX: false,
+                    yoyo: false,
+                    duration: 2000,
+                    ease: "sine.in",
                 },
                 {
                     targets: this.gameOver,
@@ -358,9 +374,10 @@ const config = {
     parent: 'phaser-example',
     physics: {
         default: 'arcade',
-        arcade: { debug: true }
+        arcade: { debug: false}
     },
     scene: [Intro, Level1, Level2]
+    // scene: [Level2, Level1, Intro]
     
 };
 
