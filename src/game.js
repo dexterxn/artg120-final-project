@@ -385,11 +385,8 @@ class Level2 extends Phaser.Scene{
 
 const config = {
     scale:{
-        // mode: Phaser.Scale.RESIZE,
-        zoom: 0.41,
+        mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        // displayScale: 0.1,
-        // displaySize: 0.001,
         width: 2388,
         height: 1668,
     },
@@ -400,7 +397,6 @@ const config = {
         arcade: { debug: false}
     },
     scene: [Intro, Level1, Level2]
-    // scene: [Level2, Level1, Intro]
     
 };
 
